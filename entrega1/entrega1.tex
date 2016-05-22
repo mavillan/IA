@@ -37,10 +37,10 @@ Bibliografía (5\%): & \underline{\hspace{2cm}}\\
 
 \end{abstract}
 
-\section{Introducción}
+\section{Introducción} \label{intro}
 
 
-\section{Definición del Problema}
+\section{Definición del Problema} \label{probdef}
 La definición del problema que se expone en esta sección, esta basada en \textit{ROADEF/Euro Challenge 2014} 
 \cite{Problem}, con ciertas modificaciones y simplificaciones que se detallan en lo que sigue.
 
@@ -186,18 +186,63 @@ cantidad de \textit{dimensiones}, a continuación se describen cada una de ellas
 \end{description}
 
 
-\section{Estado del Arte}
 
 
-\section{Modelo Matemático}
+\section{Estado del Arte} \label{SoA}
+En la presente sección se hace un estudio acerca de como nace este problema y la forma en que ha sido abordado. Pese a que  hay gran cantidad de trabajo realizado (y en desarrollo) al respecto \cite{RoadefResults}, hay pocos que han sido publicados. Por lo tanto también se expondrán las variantes o sub-problemas más conocidos, así como los disintitos enfoques con los que han sido abordados.
+
+\begin{description}
+	\item[\textsc{Inicios del Problema.}] En el problema de estudio en el presente artículo, corresponde a una versión \textit{simplificada} del problema propuesto en el ROADEF/EURO Challenge 2014 \cite{Problem}, competencia organizada
+	por la \textit{SFrench Operational Research (OR) and Decision Support Society} (ROADEF) y la \textit{European Operational Research Society} (EURO) en conjunto con la \textit{Société Nationale des Chemins de Fer Français} (SNFC).
+	El objetivo de esta, fue encontrar la mejor forma realizar el manejo, ruteo y asignación de trenes en una estación ferroviaria, tal como se explicó en la sección \ref{probdef}. La simplifación nombrada, consiste en que se da por alto una de las dimensiones del problema, que es la unión y separación de trenes. Como se explicó en la sección \ref{probdef},
+	los trenes son las unidades de asignación más pequeñas a utilizar, esto es, no pueden ser separados ni recambinados sus vagones. Sin embargo, en la medida de poder satisfacer salidas con gran cantidad de pasajeros, es posible \textit{unir} 
+	dos trenes en el sistema para cumplir con la capacidad. El proceso de \textit{unir} y \textit{separar} trenes en las estaciones es llevado en los \textit{grupos de pistas}, y agrega una complejidad considerable a la formulación y a su solución.
+	Una buena cantidad de equipos lograron dar con soluciones satisfactorias \cite{RoadefResults}. Algunas de estas se detallan en lo que sigue.
+
+	\item[\textsc{Propuestas de Solución.}]
+	El primero trabajo publicado corresponde a \textit{A Math-Heuristic Framework for the ROADEF/EURO Challenge 2014} \cite{MathHeuristic}, cuyos autores participaron en la categoría junior del concurso obteniendo el segundo lugar. El nombre \textit{math-heuristic} se debe a que se combinan métodos exactos con heurísticas para hallar una solución. El problema original se aborda como cuatros sub-problemas, tal como se describe en la figura \ref{fig:diagram}. Cada etapa se resume a continuación:
+	\begin{enumerate}
+		\item \textsc{Arrival\&Departure Matching}. En esta primera etapa, se intenta hacer un \textit{match} para cada salida, con un tren compatible (tren inicial o de llegadas). El problema es planteado como MIP (\textit{Mixed Integer Programming}), con básicamente dos objetivos: Minimizar el número de cancelaciones de salidas (salidas sin cubrir) y maximizar la cantidad de reusos entre las llegadas y salidas. Debido a la gran cantidad de variables involucradas, este es resuelto usando el método de generación de columnas. Para generar los \textit{matches} se generan los conjuntos $\text{Comp}(d)$ y $\text{Comp}(t)$ que contienen los trenes compatibles para cada salida $d$ y las salidas compatibles a cada tren $t$, respectivamente. Estos se computan filtrando las combinaciones inviables, y utilizando heurísticas (eg. eliminando \textit{matches} en espacios de tiempo muy grandes). 
+		\item \textsc{Platform Assignment}. En segundo lugar es necesario asignar las plataformas a utilizar por cada llegada y salida a cubrir. Se intenta aquí asignar de manera que se minimizen las cancelaciones de llegada y salidas, y que cada una sea asignada a su plataforma preferida, en la medida de lo posible. Este tambien se plantea como MIP, pero se resuelve buscando una solución exacta.
+		\item \textsc{Arrival\&Departure Sequence Assigner}. Luego para cada una de las llegadas y salidas a cubrir, se generan patrones de uso de los grupos de pistas, de modo que no existan conflictos entre en las secuencias respectivas, ni el uso de recursos impuestos inicialmente. 
+		\item \textsc{Simulated Annealing / Train Routing}. En última instancia, \textit{Simulated Annealing} (SA) es utilizado para generar rutas (secuencia de recursos) que los trenes realizan en la estación. Para ello en cada iteración se \textit{rutea} a un tren, seleccionando una ruta aleatorea basada en los \textit{matches} y asignación de recursos anteriores. Cada nueva solución es aceptada dependiendo del costo y temperatura.
+	\end{enumerate}
+	Cabe mencionar el este articulo no trabaja las condiciones de uniones de trenes en llegadas y salidas. En definita este enfoque se basa en ocupa SA para generar rutas aleatoreas, apoyandose en resultados precomputados para la utilización de recursos y evitar conflictos.
+	\begin{figure}[htpb!]
+	\centering
+	\includegraphics[width=4cm]{diagram}
+	\caption{Esquema de solución en Math-Heuristic Framework (Fuente \cite{MathHeuristic})}
+	\label{fig:diagram}
+	\end{figure}
+
+	El segundo trabajo \textit{Roadef Challenge 2014: A Modeling Approach, Rolling stock unit management on railway sites}\cite{ModelingApproach}, presenta un acabado estudio con un modelo similar al anterior; Descompone el problema original en dos estapas de decisión: asignación y enrutamiento. La idea de generar estos dos subproblemas, es reducir la complejidad inicial, y ocupar la técnica de resolución indicadda para cada uno. Por un lado, la primera etapa se compone básicamente de asignar trenes (de las llegadas o inicialmente en el sistema) a las salidas, asignar plataformas, y el resto de recursos del sistema. Este tipo de problemas son fácilmente formulables en MIP, y pueden ser resueltos de manera eficiente con dicha representación (por generación de columnas). Por otro lado, la fase de enrutamiento de trenes en la estación se desacopla totalmente de la fase de asignación, y se propone utilizar CP (\textit{Constraint Programming}) para su solución, pues es la opción más viable y eficiente. Algunos detalles se listan a continuación para cada fase (Ver Figura \ref{fig:diagram2}).
+ 	\begin{figure}[htpb!]
+	\centering
+	\includegraphics[width=8cm]{diagram2}
+	\caption{Esquema de solución de Modeling Approach (Fuente \cite{ModelingApproach})}
+	\label{fig:diagram2}
+	\end{figure}
+
+	\begin{enumerate}
+		\item \textsc{Asignacion.} El problema de asignación abarca asignar trenes a las salidas, asignar plataformas a las llegadas y salidas y asignar las mantenciones. La función objetivo que se plantea planteada considera: \textit{llegadas/salidas no cubiertas}, \textit{trenes iniciales no usados}, \textit{plataformas preferidas no satisfechas}, \textit{reusos no satisfechos} y \textit{sobre manteciones}. Todo lo anterior se modela por medio de MIP. Se hace luego una extensión a esta formulación para considerar el caso de llegadas \textit{enlazadas} con salidas previas, verificando que tal problema se reduce a \textit{Dependent Matching Problem} (DPM) que es NP-completo.  
+		\item \textsc{Enrutamiento.} Para esta se parte de la premisa de que es posible computar las rutas de los trenes en la estación, sin cuestionar los resultados previos de la fase de asignación. Aquí modela la estación y sus recursos como un grafo, y muestra que el problema de enrutar un sólo tren se reduce a \textit{Resource Constrained Shortest Path Problem} (RCSPP) que es NP-hard. En base a esto, un modelo de CP es inferido para definir las rutas, y luego se computan una por una las rutas de todas las llegadas/salidas, de modo que si el \textit{solver} de CP es incapáz de encontrar una solución, se cancela la llegada/salida asociada.
+	\end{enumerate}
+	Los autores reconocen que uno de los puntos debiles del modelo propuesto está en la estrategia de enrutamiento, sobre la cual es posible usar distintas heurísticas para tratar el problema de formas más integrada, y así minimizar las cancelaciones. 
 
 
-\section{Conclusiones}
+
+	\item[\textsc{Problemas Relacionados.}]
+\end{description}
+
+\section{Modelo Matemático} \label{model}
+
+
+\section{Conclusiones} \label{conclutions}
 
 
 \section{Bibliografía}
 
 \bibliographystyle{plain}
-\bibliography{Referencias}
+\bibliography{referencias}
 
 \end{document} 

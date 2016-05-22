@@ -1,5 +1,21 @@
 \begin{thebibliography}{1}
 
+\bibitem{RoadefResults}
+{Challenge ROADEF/EURO 2014 Final results}.
+\newblock \url{http://challenge.roadef.org/2014/en/finalResults.php}.
+\newblock Visitado: 23-05-2016.
+
+\bibitem{MathHeuristic}
+{Haahr, Jørgen Thorlund and Simon Henry Bull}.
+\newblock {A Math-Heuristic Framework for the ROADEF/EURO Challenge 2014}.
+\newblock Technical report, {DTU Management Engineering}, 2014.
+
+\bibitem{ModelingApproach}
+{Nicolas Catusse and Hadrien Cambazard}.
+\newblock {Roadef Challenge 2014: A Modeling Approach, Rolling stock unit
+  management on railway sites}.
+\newblock Technical report, {OSP}, 2014.
+
 \bibitem{Problem}
 Françoise Ramond and Nicolas Marcos.
 \newblock {ROADEF}/{EURO} 2014 {C}hallenge, {T}rains don’t vanish! - {F}inal
