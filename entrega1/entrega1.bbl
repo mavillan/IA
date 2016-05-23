@@ -1,14 +1,44 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{10}
 
 \bibitem{RoadefResults}
 {Challenge ROADEF/EURO 2014 Final results}.
 \newblock \url{http://challenge.roadef.org/2014/en/finalResults.php}.
 \newblock Visitado: 23-05-2016.
 
+\bibitem{Higgins}
+{A. Higgins and E. Kozan}.
+\newblock {Heuristic Techniques for Single Line Train Scheduling}.
+\newblock {\em {Journal of Heuristics}}, page {43–62}, {1997}.
+
+\bibitem{DAriano}
+{Andrea D’Ariano, Dario Pacciarelli and Marco Pranzo}.
+\newblock {A branch and bound algorithm for scheduling trains in a railway
+  network}.
+\newblock {\em {European Journal of Operational Research}}, {183}:{643--657},
+  {2006}.
+
+\bibitem{Caprara}
+{Caprara A, Fischetti M, Toth P}.
+\newblock {Modeling and solving the train timetabling problem}.
+\newblock {\em {Oper Res}}, {50}:{851--861}, {2002}.
+
 \bibitem{MathHeuristic}
 {Haahr, Jørgen Thorlund and Simon Henry Bull}.
 \newblock {A Math-Heuristic Framework for the ROADEF/EURO Challenge 2014}.
 \newblock Technical report, {DTU Management Engineering}, 2014.
+
+\bibitem{Ghoseiri}
+{Keivan Ghoseiri, Ferenc Szidarovszky and Mohammad Jawad Asgharpour}.
+\newblock {A multi-objective train scheduling model and solution}.
+\newblock {\em {Transportation Research Part B}}, {38}:{927--952}, {2004}.
+
+\bibitem{Mohammad}
+{Mohammad Ali Shafia, Mohsen Pourseyed Aghaee, Seyed Jafar Sadjadi, and Amin
+  Jamili}.
+\newblock {Robust Train Timetabling Problem: Mathematical Model and Branch and
+  Bound Algorithm}.
+\newblock {\em {IEEE Transactions on Intelligent Transportation Systems}},
+  {13}({1}):{307--317}, {2012}.
 
 \bibitem{ModelingApproach}
 {Nicolas Catusse and Hadrien Cambazard}.
@@ -16,10 +46,33 @@
   management on railway sites}.
 \newblock Technical report, {OSP}, 2014.
 
+\bibitem{Genetic}
+{P. Tormos, A. Lova, F. Barber, L. Ingolotti, M. Abril, M. A. Salido}.
+\newblock {A Genetic Algorithm for Railway Scheduling Problems}.
+\newblock {\em {Studies in Computational Intelligence}}, 128:255--276, 2008.
+
 \bibitem{Problem}
 Françoise Ramond and Nicolas Marcos.
 \newblock {ROADEF}/{EURO} 2014 {C}hallenge, {T}rains don’t vanish! - {F}inal
   phase, {R}olling stock unit management on railway sites, 2014.
 \newblock {SNCF} - Innovation \& Research Department.
+
+\bibitem{Norio}
+{Tomii Norio, Tashiro Yoshiaki, Tanabe Noriyuki, Hirai Chikara 1 and Muraki
+  Kunimitsu}.
+\newblock {Train Rescheduling Algorithm Which Minimizes Passengers’
+  Dissatisfaction}.
+\newblock {\em {Lecture Notes in Computer Science}}, {3533}:{829--838}, {2005}.
+
+\bibitem{Cacchiani}
+{Valentina Cacchiani, Alberto Caprara and Paolo Toth}.
+\newblock {A column generation approach to train timetabling on a corridor}.
+\newblock {\em {4OR}}, {6}({2}):{125--142}, {2008}.
+
+\bibitem{Li}
+{Xiang Li, Dechun Wang, Keping Li and Ziyou Gao}.
+\newblock {A green train scheduling model and fuzzy multi-objective
+  optimization algorithm}.
+\newblock {\em {Applied Mathematical Modelling}}, {37}:{2063--2073}, {2013}.
 
 \end{thebibliography}

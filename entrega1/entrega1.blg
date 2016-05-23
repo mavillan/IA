@@ -4,45 +4,45 @@ The top-level auxiliary file: entrega1.aux
 The style file: plain.bst
 Database file #1: referencias.bib
 Warning--to sort, need author or key in RoadefResults
-You've used 4 entries,
+You've used 13 entries,
             2118 wiz_defined-function locations,
-            518 strings with 4697 characters,
-and the built_in function-call counts, 822 in all, are:
-= -- 81
-> -- 28
-< -- 0
-+ -- 12
-- -- 8
-* -- 31
-:= -- 148
-add.period$ -- 12
-call.type$ -- 4
-change.case$ -- 18
+            591 strings with 6379 characters,
+and the built_in function-call counts, 3643 in all, are:
+= -- 377
+> -- 91
+< -- 1
++ -- 39
+- -- 26
+* -- 208
+:= -- 601
+add.period$ -- 39
+call.type$ -- 13
+change.case$ -- 54
 chr.to.int$ -- 0
-cite$ -- 5
-duplicate$ -- 30
-empty$ -- 76
-format.name$ -- 8
-if$ -- 173
+cite$ -- 14
+duplicate$ -- 148
+empty$ -- 331
+format.name$ -- 26
+if$ -- 790
 int.to.chr$ -- 0
-int.to.str$ -- 4
-missing$ -- 0
-newline$ -- 23
-num.names$ -- 6
-pop$ -- 26
+int.to.str$ -- 13
+missing$ -- 9
+newline$ -- 68
+num.names$ -- 24
+pop$ -- 47
 preamble$ -- 1
-purify$ -- 12
+purify$ -- 39
 quote$ -- 0
-skip$ -- 23
+skip$ -- 111
 stack$ -- 0
-substring$ -- 20
-swap$ -- 2
-text.length$ -- 0
+substring$ -- 299
+swap$ -- 30
+text.length$ -- 1
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 16
+type$ -- 52
 warning$ -- 1
-while$ -- 6
-width$ -- 5
-write$ -- 43
+while$ -- 33
+width$ -- 15
+write$ -- 142
 (There was 1 warning)
