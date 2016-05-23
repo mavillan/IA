@@ -227,7 +227,27 @@ En la presente sección se hace un estudio acerca de como nace este problema y l
 		\item \textsc{Asignacion.} El problema de asignación abarca asignar trenes a las salidas, asignar plataformas a las llegadas y salidas y asignar las mantenciones. La función objetivo que se plantea planteada considera: \textit{llegadas/salidas no cubiertas}, \textit{trenes iniciales no usados}, \textit{plataformas preferidas no satisfechas}, \textit{reusos no satisfechos} y \textit{sobre manteciones}. Todo lo anterior se modela por medio de MIP. Se hace luego una extensión a esta formulación para considerar el caso de llegadas \textit{enlazadas} con salidas previas, verificando que tal problema se reduce a \textit{Dependent Matching Problem} (DPM) que es NP-completo.  
 		\item \textsc{Enrutamiento.} Para esta se parte de la premisa de que es posible computar las rutas de los trenes en la estación, sin cuestionar los resultados previos de la fase de asignación. Aquí modela la estación y sus recursos como un grafo, y muestra que el problema de enrutar un sólo tren se reduce a \textit{Resource Constrained Shortest Path Problem} (RCSPP) que es NP-hard. En base a esto, un modelo de CP es inferido para definir las rutas, y luego se computan una por una las rutas de todas las llegadas/salidas, de modo que si el \textit{solver} de CP es incapáz de encontrar una solución, se cancela la llegada/salida asociada.
 	\end{enumerate}
-	Los autores reconocen que uno de los puntos debiles del modelo propuesto está en la estrategia de enrutamiento, sobre la cual es posible usar distintas heurísticas para tratar el problema de formas más integrada, y así minimizar las cancelaciones. 
+	Los autores reconocen que uno de los puntos debiles del modelo propuesto está en la estrategia de enrutamiento, sobre la cual es posible usar distintas heurísticas para tratar el problema de formas más integrada, y así minimizar las cancelaciones.
+
+	Un estudio interesante es el que realiza (nuevamente) Haahr et al. \cite{Haahr}, en donde se enfocan en la tarea de analizar, modelar y solucionar uno de los subproblemas de \textit{Rolling Stock Unit Management on Railway Sites Problem} (RSUM) más importantes; El \textit{train Departure Matching Problem} (DMP), que consiste en realizar las asignaciones de trenes (entre los que estan inicialmente, y los de las llegadas) a las correspondientes salidas, satisfaciendo las restricciones de compatibilidad y mantenciones. La importancia del DPM subyace en que cualquier enfoque utilizado para solucionar el RSUM, se ve afectado en gran parte por cómo los trenes son asociados a las salidas. En primer lugar se muestra que el DMP es NP-hard por reducción al \textit{0-1 Multiple Knapsack Problem}. Luego se propone resolver el problema con métodos exactos, formulando el problema como MIP (\textit{Mixed Integer Programming}) de dos formas equivalentes; La primera de ellas es resulta con el MIP \textit{solver} IBM ILOG CPLEX, y la segunda con métodos de generación de columnas. En las pruebas ambos métodos demoran una gran tiempo en computar sus soluciones. Para ello propone se proponen heurísticas para generar columnas, eliminando las columnas innecesarias en el modelo anteriores.
+
+	La tesis de Mulders y Scholliers \cite{Mulders} constituye un análisis en detalle respecto al problema. A modo de estudio preliminar, se modela inicialmente el problema con tres enfoques distintos. El primero de ellos es plantear las asignaciones de salidas a trenes como un \textit{Matching} en un grafo bipartito, la segunda ocupa \textit{constraint programming} restringiendo las posibles configuraciones, y la tercera se plantea resolver mediante greedy. El computo de las rutas que siguen los trenes en el sistema, se hace a traves de MIP con LPsolve. Pese a que los tres enfoques sufren de serios problemas en cuanto a tiempo de computación (no son factibles de utilizar), su análisis ayudo a desarrollar la solución final. Esta última posee cuatro componentes principales:
+	\begin{enumerate}
+		\item \textbf{Objects}, que corresponden a una representación conveniente (para esta formulación) de los datos y variables del sistema.
+		\item \textbf{Oracle}, es un componente encargado de verificar que distintas acciones puedan ser llevada a cabo sin violar restricciones, así como determinar donde y cuando pueden ser llevadas a cabo (mantenciones por ejemplo).
+		\item \textbf{WaysPC}, que es capaz de computar rutas compatibles para todos los trenes presentes en el sistema en un instante dado.
+		\item \textbf{Solver}, componente principal que hace uso de los anteriores, para encontrar soluciones usando una metodología greedy. 
+	\end{enumerate}
+	El objetivo principal del solver propuesto es dejar la menor cantidad de partida sin asignar, esto pues por ejemplo, es mucho más importante cubrir una partida que asignarla a una plataforma no preferida. En la Figura \ref{fig:graphres} se
+	muestra el procentaje de partidas cubiertas en un horizonte de $7$ dias, para $6$ distintas instancias del desafío. Se puede notar que el desempeño de las asignaciones va empeorando en el tiempo.
+	\begin{figure}[htpb!]
+	\centering
+	\includegraphics[width=9cm]{graphres}
+	\caption{Porcentaje de salidas asignadas por Solver (Fuente \cite{Mulders})}
+	\label{fig:graphres}
+	\end{figure}
+	Los autores concluye que el algoritmo desarrollado, es de hecho competitivo, pues es capaz de entregar soluciones a instancias del ROADEF/EURO Challenge 2014 en menos de un minuto (el tiempo límite para estas instancias era de $10$ minutos). Por otro lado obtiene desempeños similares a las mejores soluciones del desafío \cite{RoadefResults}. Por último se propone como trabajo futuro, determinar heurísticas que permitan mejorar aun más la calidad de las soluciones, así como mejorar la definición de los objetivos en el modelo.
+
 
 
 
@@ -261,14 +281,49 @@ En la presente sección se hace un estudio acerca de como nace este problema y l
 	\caption{Comparación de convergencia versus tiempo de ejecución de Heurísticas (Fuente \cite{Higgins})}
 	\label{fig:timecomp}
 	\end{figure}
-
-
-
-
-
 \end{description}
 
 \section{Modelo Matemático} \label{model}
+A fin de mantener la definición del problema simple en la Sección \ref{probdef}, muchas notación y aspectos técnicos fueron omitidos. En lo que sigue se predende dar una descripción formal más acabada al respecto. La formulación propuesta sigue de igual modo que la descripción del problema en \cite{Problem}, y por lo tanto se ocupa la misma notación para mantener la coherencia. Para no abrumar al lector, la notación se explica de modo progresivo.
+
+\subsection{Restricciones}
+
+\begin{description}
+	\item \textsc{Propiedades de las Programaciones.}
+	\begin{enumerate}
+		\item \textbf{Entradas en el sistema.}
+		\item \textbf{Salidas del sistema.}
+		\item \textbf{Uso de un recurso.}
+		\item \textbf{Transición a un recurso vecino.}
+		\item \textbf{Operaciones de mantención.}
+		\item \textbf{Uso de un grupo de pistas.}
+		\item \textbf{Mínimo tiempo de reversa.}
+	\end{enumerate}
+
+	\item \textsc{Asignaciones.}
+	\begin{enumerate}
+		\item \textbf{Restricciones de trenes.}
+		\item \textbf{Restricciones de DBM.}
+		\item \textbf{Restricciones de TBM.}
+		\item \textbf{Compatibilidad de categoría.}
+	\end{enumerate}
+
+	\item \textsc{Utilización de Recursos.}
+	\begin{enumerate}
+		\item \textbf{Compatibilidad de categoría.}
+		\item \textbf{Capacidad de pistas simples.}
+		\item \textbf{Uso máximo de plataforma.}
+		\item \textbf{Mínima utilización de un recurso.}
+		\item \textbf{Uso impuesto de recursos.}
+		\item \textbf{Largo de una pista.}
+		\item \textbf{Capacidad de instalaciones de mantenimiento.}
+		\item \textbf{Orden de trenes en pistas individuales.}
+		\item \textbf{Conflictos en grupos de pistas.}
+	\end{enumerate}
+
+\end{description}
+
+\subsection{Función Objetivo}
 
 
 \section{Conclusiones} \label{conclutions}

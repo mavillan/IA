@@ -4,45 +4,45 @@ The top-level auxiliary file: entrega1.aux
 The style file: plain.bst
 Database file #1: referencias.bib
 Warning--to sort, need author or key in RoadefResults
-You've used 13 entries,
+You've used 15 entries,
             2118 wiz_defined-function locations,
-            591 strings with 6379 characters,
-and the built_in function-call counts, 3643 in all, are:
-= -- 377
-> -- 91
+            602 strings with 6684 characters,
+and the built_in function-call counts, 4033 in all, are:
+= -- 419
+> -- 105
 < -- 1
-+ -- 39
-- -- 26
-* -- 208
-:= -- 601
-add.period$ -- 39
-call.type$ -- 13
-change.case$ -- 54
++ -- 45
+- -- 30
+* -- 222
+:= -- 681
+add.period$ -- 45
+call.type$ -- 15
+change.case$ -- 63
 chr.to.int$ -- 0
-cite$ -- 14
-duplicate$ -- 148
-empty$ -- 331
-format.name$ -- 26
-if$ -- 790
+cite$ -- 16
+duplicate$ -- 164
+empty$ -- 360
+format.name$ -- 30
+if$ -- 867
 int.to.chr$ -- 0
-int.to.str$ -- 13
+int.to.str$ -- 15
 missing$ -- 9
-newline$ -- 68
-num.names$ -- 24
-pop$ -- 47
+newline$ -- 78
+num.names$ -- 28
+pop$ -- 53
 preamble$ -- 1
-purify$ -- 39
+purify$ -- 45
 quote$ -- 0
-skip$ -- 111
+skip$ -- 122
 stack$ -- 0
-substring$ -- 299
+substring$ -- 309
 swap$ -- 30
 text.length$ -- 1
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 52
+type$ -- 60
 warning$ -- 1
-while$ -- 33
-width$ -- 15
-write$ -- 142
+while$ -- 37
+width$ -- 17
+write$ -- 164
 (There was 1 warning)

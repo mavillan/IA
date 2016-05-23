@@ -27,6 +27,11 @@
 \newblock {A Math-Heuristic Framework for the ROADEF/EURO Challenge 2014}.
 \newblock Technical report, {DTU Management Engineering}, 2014.
 
+\bibitem{Haahr}
+{Jørgen Thorlund Haahr and Simon Henry Bull}.
+\newblock {Exact Methods for Solving the Train Departure Matching Problem}.
+\newblock Technical report, {Technical University of Denmark}, 2015.
+
 \bibitem{Ghoseiri}
 {Keivan Ghoseiri, Ferenc Szidarovszky and Mohammad Jawad Asgharpour}.
 \newblock {A multi-objective train scheduling model and solution}.
@@ -56,6 +61,11 @@ Françoise Ramond and Nicolas Marcos.
 \newblock {ROADEF}/{EURO} 2014 {C}hallenge, {T}rains don’t vanish! - {F}inal
   phase, {R}olling stock unit management on railway sites, 2014.
 \newblock {SNCF} - Innovation \& Research Department.
+
+\bibitem{Mulders}
+{Salomé Mulders and Yu-Lan Scholliers}.
+\newblock {Train Scheduling and Resource Managment in a Railway Station}.
+\newblock Master's thesis, {Unversité Catholique de Louvain}, 2014.
 
 \bibitem{Norio}
 {Tomii Norio, Tashiro Yoshiaki, Tanabe Noriyuki, Hirai Chikara 1 and Muraki
