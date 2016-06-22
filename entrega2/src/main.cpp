@@ -93,6 +93,11 @@ struct InitialTrain{
 	string resource;
 };
 
+struct Neighbor{
+	int indexGate;
+	string nResource;
+	int nindexGate;
+};
 
 struct Sched{
 };	
@@ -279,17 +284,22 @@ int main(int argc, char *argv[])
 	}
 
 	//GATES
-
+	map<string, vector<Neighbor> > Neighbors;
+	for(uint i=1; i < gatesData.size(); i+=2){
+		string key = gatesData.at(i).at(0);
+		if(Neighbors.count(key)==0){
+			vector<Neighbor> neigh;
+			Neighbors[key] = neigh;
+		}
+		Neighbor ng;
+		ng.indexGate = stoi(gatesData.at(i).at(2));
+		ng.nResource = gatesData.at(i).at(3);
+		ng.nindexGate = stoi(gatesData.at(i).at(5));
+		Neighbors[key].push_back(ng);
+	}
 
 	//MAKE TRAINS DICTIONARY
 
 	cout << Consumptions["TrackGroup1"].at(0).exitTime << endl;
-
- //    vector< vector<string> > arrDepSequencesData, arrivalsData, compCatDepData, compCatResData, departuresData, facilitiesData, gatesData, 
- //    imposedConsumptionsData, initialTrainsData, jointArrDepData, parametersData, platformsData, prefPlatData, reusesData, singleTracksData, 
- //    trackGroupsData, trainCategoriesData, yardsData;
-
-	// 
-	// 
 	return 0;
 }
