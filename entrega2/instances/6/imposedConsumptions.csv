@@ -1,0 +1,14 @@
+resource;beg;end;nb;originGate;destinationGate;entranceTime;
+Platform6;d1 09:59:00;d1 10:08:00;;;;;
+TrackGroup1;;;;A11;B14;d1 10:08:00;
+TrackGroup3;;;;A6;B4;d1 10:08:40;
+TrackGroup6;;;;A4;B3;d1 10:09:10;
+TrackGroup7;;;;A5;B6;d1 10:09:50;
+TrackGroup7;;;;B3;A4;d1 10:43:10;
+TrackGroup6;;;;B2;A2;d1 10:44:10;
+TrackGroup3;;;;B2;A6;d1 10:44:50;
+TrackGroup1;;;;B14;A11;d1 10:45:20;
+Platform6;d1 10:46:00;d1 11:01:00;;;;;
+TrackGroup1;;;;A11;B11;d1 11:01:00;
+TrackGroup3;;;;A3;B7;d1 11:01:40;
+TrackGroup8;;;;A3;B3;d1 11:02:10;

@@ -1,0 +1,4 @@
+idDeparture;depTime;depSeq;jointDep;idealDwell;maxDwell;reqDBM;reqTBM;
+Dep1;d1 03:50:00;DepSeq1;;00:15:00;01:05:00;150;02:50:00;
+Dep2;d1 05:33:00;DepSeq2;;00:15:00;01:33:00;130;02:30:00;
+Dep3;d1 05:36:00;DepSeq1;;00:30:00;02:36:00;900;07:00:00;

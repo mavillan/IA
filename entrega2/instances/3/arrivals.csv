@@ -1,0 +1,9 @@
+idArrival;arrTrain;arrTime;arrSeq;jointArr;linkedDep;cat;idealDwell;maxDwell;remDBM;remTBM;
+Arr1;Train1;d1 00:13:27;ArrSeq1;;;Cat1;00:15:00;05:56:21;1990;72:00:00;
+Arr2;Train2;d1 00:58:30;ArrSeq2;;;Cat1;00:15:00;07:16:28;2160;72:00:00;
+Arr3;Train3;d1 01:58:50;ArrSeq1;;;Cat1;00:05:00;03:53:29;2330;72:00:00;
+Arr4;Train4;d1 01:58:58;ArrSeq1;;;Cat1;00:05:00;02:31:28;2490;72:00:00;
+Arr5;Train5;d1 01:59:58;ArrSeq1;;;Cat1;00:05:00;00:44:19;1700;72:00:00;
+Arr6;Train6;d1 01:59:59;ArrSeq1;;;Cat1;00:15:00;03:19:59;2360;72:00:00;
+Arr7;Train7;d1 01:59:59;ArrSeq2;;;Cat1;00:15:00;03:34:36;1820;72:00:00;
+Arr8;Train8;d1 02:59:59;ArrSeq2;;;Cat1;00:15:00;06:47:39;2290;72:00:00;
