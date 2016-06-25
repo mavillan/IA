@@ -89,13 +89,9 @@ struct Consumption{
 	int exitTime;	
 };
 
-struct InitialTrain{
-	string resource;
-};
-
 struct Neighbor{
 	int indexGate;
-	string nResource;
+	string nresource;
 	int nindexGate;
 };
 
@@ -251,12 +247,10 @@ int main(int argc, char *argv[])
 	}
 
 	//INITIAL TRAINS
-	map<string, InitialTrain> InitialTrains;
+	map<string, string> InitialTrains;
 	for(uint i=1; i < initialTrainsData.size(); i++){
 		string key = initialTrainsData.at(i).at(0);
-		InitialTrain it;
-		it.resource = initialTrainsData.at(i).at(2);
-		InitialTrains[key] = it;
+		InitialTrains[key] = initialTrainsData.at(i).at(2);
 	}
 
 	//IMPOSED CONSUMPTIONS
@@ -293,13 +287,31 @@ int main(int argc, char *argv[])
 		}
 		Neighbor ng;
 		ng.indexGate = stoi(gatesData.at(i).at(2));
-		ng.nResource = gatesData.at(i).at(3);
-		ng.nindexGate = stoi(gatesData.at(i).at(5));
+		ng.nresource = gatesData.at(i).at(3);
+		if(ng.nresource.length()==0){
+			//Enf Of System
+			ng.nresource = "EOS";
+			ng.nindexGate = 0;
+		}
+		else{
+			ng.nindexGate = stoi(gatesData.at(i).at(5));
+		}
 		Neighbors[key].push_back(ng);
 	}
 
-	//MAKE TRAINS DICTIONARY
+	//TRAINS DICTIONARY
+	map<string, int> Trains;
+	for(auto const &arr : Arrivals){
+		string key = arr.second.idTrain;
+		Trains[key] = arr.second.arrTime;
+	}
+	
+	for(auto const &tr: InitialTrains){
+		string key = tr.first;
+		Trains[key] = 0;
+	}
 
-	cout << Consumptions["TrackGroup1"].at(0).exitTime << endl;
+	cout << Trains["Train7"] << endl;
+	
 	return 0;
 }
