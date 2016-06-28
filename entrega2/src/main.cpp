@@ -5,6 +5,11 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <random>
+#include <iomanip>
+
+#include "matcher.h"
+#include "assigner.h"
 
 using namespace std;
 
@@ -19,6 +24,7 @@ static const int NUMCOLTRACKGROUPS = 3;
 static const int NUMCOLSINGLETRACKS = 3;
 static const int NUMCOLREUSES = 2;
 static const int NUMCOLINITIALTRAINS = 5;
+static const int NUMCOLTRAINCATEGORIES = 7;
 static const int NUMCOLIMPOSEDCONS = 7;
 static const int NUMCOLGATES = 6;
 
@@ -31,14 +37,16 @@ int ttf(string time, bool hasD){
 	if(hasD){
 		if (sscanf(time.c_str(), "%*s %d:%d:%d", &h, &m, &s) >= 2){
 			secs = h*3600 + m*60 + s;
+			return secs;
 		}
 	}
 	else{
 		if (sscanf(time.c_str(), "%d:%d:%d", &h, &m, &s) >= 2){
 			secs = h*3600 + m*60 + s;
+			return secs;
 		}
 	}
-	return secs;
+	return -1;
 }
 
 //inverse time transformation from "secs" to "hh:mm:ss"
@@ -49,6 +57,22 @@ string ittf(int secs, bool hasD){
 //verify if "x" is contained in "list"
 bool contains(const vector<int> list, int x){
 	return find(list.begin(), list.end(), x) != list.end();
+}
+
+
+//Writes "Matches" results on "filename" file
+void Logger(map<string, string> &Matches, int minObjFunc, string filename){
+	string dep, tr;
+	ofstream file;
+	file.open(filename,fstream::out);
+	for(auto const &m : Matches){
+		dep = m.first;
+		tr = m.second;
+		file << setw(8) << left << dep << tr << endl;
+	}
+	file << endl;
+	file << "Minimum Objective Func: " << minObjFunc << endl;
+	file.close();
 }
 
 //////////////////// ENF OF HELPER FUNCTIONS ////////////////////
@@ -95,8 +119,32 @@ struct Neighbor{
 	int nindexGate;
 };
 
-struct Sched{
-};	
+struct Params{
+	//Minimum time if trains changes of direction
+	int revTime;
+	//Cost associated with non-satisfied preferred platform assignment
+	int platAsgCost;
+	//Cost of every second of difference between ideal and actual time in platform
+	float dwellCost;
+	//Cost of preferred reuse not satisfied in the solution
+	int reuseCost;
+	//Minimum duration of use of resource
+	int minResTime;
+	//Maximum duration of use of a platform in absence of an arrival or departure
+	int maxDwellTime;
+	//Cost associated with any uncovered departure or arrival or unuser train
+	int uncovCost;
+	//Number of iterations of Tabu Search to perform on Matching stage
+	int nIter1;
+	//Length of Tabu map on Matching stage
+	int tabuLength1;
+	//Number of iterations of Tabu Search to perform on Assigning stage
+	int nIter2;
+	//Length of Tabu map on Assigning stage
+	int tabuLength2;
+	//Length of trains
+	string trLength;
+};
 
 
 
@@ -127,12 +175,20 @@ vector< vector<string> > loadData(const char* filename, int value) {
 
 int main(int argc, char *argv[]) 
 {
-    //LOADING DATA
-	string instancePath = argv[1];
+    //PARSING ARGUMENTS
+	string instancePath = "../instances/"+(string)argv[1]+"/";
+	int nIter1, tabuLength1;
+	int nIter2, tabuLength2;
+	nIter1 = atoi(argv[2]);
+	tabuLength1 = atoi(argv[3]);
+	nIter2 = atoi(argv[4]);
+	tabuLength2 = atoi(argv[5]);
 
+	
+	//LOADING DATA
 	vector< vector<string> > arrivalsData, departuresData, arrDepSequencesData, parametersData, 
 	platformsData, prefPlatData, yardsData, trackGroupsData, singleTracksData, reusesData, 
-	initialTrainsData, imposedConsumptionsData, gatesData;
+	initialTrainsData, trainCategoriesData, imposedConsumptionsData, gatesData;
 
 	arrivalsData = loadData((instancePath + "arrivals.csv").c_str(), NUMCOLARRIVALS);
 	departuresData = loadData((instancePath + "departures.csv").c_str(), NUMCOLDEPARTURES);
@@ -145,8 +201,38 @@ int main(int argc, char *argv[])
 	singleTracksData = loadData((instancePath + "/singleTracks.csv").c_str(), NUMCOLSINGLETRACKS);
 	reusesData = loadData((instancePath + "/reuses.csv").c_str(), NUMCOLREUSES);
 	initialTrainsData = loadData((instancePath + "/initialTrains.csv").c_str(), NUMCOLINITIALTRAINS);
+	trainCategoriesData = loadData((instancePath + "/trainCategories.csv").c_str(), NUMCOLTRAINCATEGORIES);
 	imposedConsumptionsData = loadData((instancePath + "/imposedConsumptions.csv").c_str(), NUMCOLIMPOSEDCONS);
 	gatesData = loadData((instancePath + "/gates.csv").c_str(), NUMCOLGATES);
+
+	//PARAMETERS
+	Params params;
+	//Minimum time if trains changes of direction
+	params.revTime = ttf(parametersData.at(3).at(1), false);
+	//Cost associated with non-satisfied preferred platform assignment
+	params.platAsgCost = stoi(parametersData.at(9).at(1));
+	//Cost of every second of difference between ideal and actual time in platform
+	params.dwellCost = stof(parametersData.at(10).at(1));
+	//Cost of preferred reuse not satisfied in the solution
+	params.reuseCost = stoi(parametersData.at(11).at(1));
+	//Minimum duration of use of resource
+	params.minResTime = ttf(parametersData.at(12).at(1), false);
+	//Maximum duration of use of a platform in absence of an arrival or departure
+	params.maxDwellTime = ttf(parametersData.at(13).at(1), false);
+	//Cost associated with any uncovered departure or arrival or unuser train
+	params.uncovCost = stoi(parametersData.at(16).at(1));
+	//Length of trains
+	params.trLength = trainCategoriesData.at(1).at(1);
+	//Number of iterations of Tabu Search to perform on Matching stage
+	params.nIter1 = nIter1;
+	//Length of Tabu map on Matching stage
+	params.tabuLength1 = tabuLength1;
+	//Number of iterations of Tabu Search to perform on Assigning stage
+	params.nIter2 = nIter2;
+	//Length of Tabu map on Assigning stage
+	params.tabuLength2 = tabuLength2;
+
+
 
 	//ARRIVALS
 	map<string, Arrival> Arrivals;
@@ -184,15 +270,6 @@ int main(int argc, char *argv[])
 		trackGroups.at(3) = arrDepSequencesData.at(i+3).at(1);
 		Sequences[key] = trackGroups;
 	}
-
-	//PARAMETERS
-	map<string, float> Params;
-	Params["platAsgCost"] = stof(parametersData.at(9).at(1));
-	Params["dwellCost"] = stof(parametersData.at(10).at(1));
-	Params["reuseCost"] = stof(parametersData.at(11).at(1));
-	Params["minResTime"] = ttf(parametersData.at(12).at(1), false);
-	Params["maxDwellTime"] = ttf(parametersData.at(13).at(1), false);
-	Params["uncovCost"] = stof(parametersData.at(16).at(1));
 
 	//PLATFORMS
 	map<string, int> Platforms;
@@ -242,7 +319,7 @@ int main(int argc, char *argv[])
 	//REUSES
 	map<string, string> Reuses;
 	for(uint i=1; i < reusesData.size(); i++){
-		string key = reusesData.at(i).at(0);
+		string key = Arrivals[reusesData.at(i).at(0)].idTrain;
 		Reuses[key] = reusesData.at(i).at(1);
 	}
 
@@ -305,13 +382,74 @@ int main(int argc, char *argv[])
 		string key = arr.second.idTrain;
 		Trains[key] = arr.second.arrTime;
 	}
-	
+
 	for(auto const &tr: InitialTrains){
 		string key = tr.first;
 		Trains[key] = 0;
 	}
 
-	cout << Trains["Train7"] << endl;
-	
+	//GENERATING THE INITIAL SOLUTION FOR MATCHINGS
+	map<string, string> Matches;
+	for(uint i = 1; i <= Departures.size(); i++){
+		Matches["Dep"+to_string(i)] = "Train"+to_string(i);
+	}
+
+	cout << "[Stage 1] Matching" << endl;
+	cout << "Initial Objective Func: ";
+	cout << fitness(Matches, Trains, Departures, Reuses, params) << endl;
+
+	//Perform the match stage
+	Matches = matcher(Matches, Trains, Departures, Reuses, params);
+	cout << "Minimum Objective Func: ";
+	int minObjFunc = fitness(Matches, Trains, Departures, Reuses, params);
+	cout << minObjFunc << endl;
+
+
+	//Filtering unfeasible matches and assigning it as "UNMATCHED"
+	for(auto const &m : Matches){
+		string dep = m.first;
+		string tr = m.second;
+		if(Trains[tr] >= Departures[dep].depTime){
+			Matches[dep] = "UNMATCHED";
+		}
+	}
+
+	//Write the results of Matches to log file
+	string outPath = "./logs/matches"+(string)argv[1];
+	Logger(Matches, minObjFunc, outPath);
+
+
+	//GENERATING THE INITIAL SOLUTION FOR ASSIGNMENTS
+	int numPlat = (int)Platforms.size();
+	int platInd = -1;
+	map<string, string> Assignments;
+	for(auto const &m: Matches){
+		string dep = m.first;
+		string tr = m.second;
+		if(tr=="UNMATCHED") continue;
+		int ind;
+		string arr;
+		if(sscanf(tr.c_str(), "%*[^0123456789]%d", &ind)==1); 
+		arr = "Arr"+to_string(ind);
+		//assignments
+		platInd = (platInd+1)%numPlat;
+		Assignments[dep] = "Platform"+to_string(platInd+1);
+		platInd = (platInd+1)%numPlat;
+		Assignments[arr] = "Platform"+to_string(platInd+1);
+	}
+
+	cout << endl << "[Stage 2] Assignments" << endl;
+	cout << "Initial Objective Func: ";
+	cout << cost(Assignments, Arrivals, Departures, Platforms, Prefered, params) << endl;
+
+	//Perform the assignment stage
+	Assignments = assigner(Assignments, Arrivals, Departures, Platforms, Prefered, params);
+	cout << "Minimum Objective Func: ";
+	minObjFunc = cost(Assignments, Arrivals, Departures, Platforms, Prefered, params);
+	cout << minObjFunc << endl;
+
+	//Write the results of Assignments to log file
+	outPath = "./logs/assignments"+(string)argv[1];
+	Logger(Assignments, minObjFunc, outPath);
 	return 0;
 }

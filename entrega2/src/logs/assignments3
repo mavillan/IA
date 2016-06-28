@@ -1,0 +1,18 @@
+Arr2    Platform4
+Arr3    Platform2
+Arr4    Platform8
+Arr5    Platform6
+Arr6    Platform9
+Arr7    Platform6
+Arr8    Platform7
+Arr9    Platform5
+Dep1    Platform8
+Dep2    Platform4
+Dep3    Platform5
+Dep4    Platform7
+Dep5    Platform9
+Dep6    Platform2
+Dep7    Platform4
+Dep8    Platform6
+
+Minimum Objective Func: 100
