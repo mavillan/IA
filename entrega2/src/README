@@ -1,0 +1,18 @@
+############################################
+Instrucciones de compilacion
+############################################
+-> Generar scheduler
+$ make
+-> Eliminar archivos de compilacion 
+make clean
+
+############################################
+Instrucciones de uso
+############################################
+-> Ejecutar scheduler sobre instancia X = [1,...10]
+$ ./scheduler X numIter1 length1 numIter2 length2
+
+donde numIter1 -> Numero de iteraciones para resolver subproblema 1
+      length1  -> Largo de la lista tabu para subproblema 1
+      numIter2 -> Numero de iteraciones para resolver subproblema 2
+      length2  -> Largo de la lista tabu para subproblema 2

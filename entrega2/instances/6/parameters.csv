@@ -13,4 +13,5 @@ reuseCost;100;
 minResTime;00:01:00;
 maxDwellTime;00:05:00;
 nbDays;1;
-maxMaint;30;uncovCost;100;
+maxMaint;30;
+uncovCost;100;
